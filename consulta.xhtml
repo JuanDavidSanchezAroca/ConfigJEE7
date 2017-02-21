@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Pagina Inicio</title>
+</h:head>
+<h:body>
+	<h:form>
+		<p:fieldset legend="Datos personales">
+			<h:panelGrid columns="2">
+				<p:outputLabel value="Id" />
+				<p:inputText value="#{holaMundoBean.persona.id}" />
+				<p:outputLabel value="Nombre" />
+				<p:inputText value="#{holaMundoBean.persona.nombre}" />
+				<p:outputLabel value="edad" />
+				<p:inputText value="#{holaMundoBean.persona.edad}" />
+				<p:outputLabel value="Correo" />
+				<p:inputText value="#{holaMundoBean.persona.email}" />
+				<p:outputLabel for="german" value="fecha:" />
+				<p:calendar id="german" value="#{holaMundoBean.persona.fecha}"
+					locale="de" navigator="true" pattern="yyyy-MMM-dd" />
+				<br />
+				<p:selectOneMenu value="#{holaMundoBean.idRol}" style="width:125px">
+					<f:selectItem itemLabel="Seleccione un rol" itemValue="#{null}" />
+					<f:selectItems value="#{holaMundoBean.roles}" var="varUsuario"
+						itemLabel="#{varUsuario.rol}" itemValue="#{varUsuario.id}" />
+				</p:selectOneMenu>
+				<f:facet name="footer">
+					<p:commandButton value="registrar"
+						action="#{holaMundoBean.agregarPersona()}" ajax="false" />
+				</f:facet>
+				<br />
+				<f:facet name="footer">
+					<p:commandButton value="Crear"
+						action="#{holaMundoBean.crearUsuarioBMT}" update=":form:users"></p:commandButton>
+				</f:facet>
+			</h:panelGrid>
+		</p:fieldset>
+	</h:form>
+	<br />
+	<h:form id="form">
+		<p:growl id="msgs" showDetail="true" />
+
+		<p:dataTable id="users" value="#{holaMundoBean.datos}" var="usuario"
+			editable="true" style="margin-bottom:20px">
+			<f:facet name="header">
+           tabla de datos
+            </f:facet>
+
+			<p:ajax event="rowEdit" listener="#{holaMundoBean.modificar}"
+				update=":form:msgs" />
+			<p:ajax event="rowEditCancel"
+				listener="#{holaMundoBean.cancelarEditar}" update=":form:msgs" />
+
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="Id">
+					</h:outputText>
+				</f:facet>
+				<h:outputText value="#{usuario.id}"></h:outputText>
+			</p:column>
+
+			<p:column headerText="Nombre">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{usuario.nombre}"></h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText value="#{usuario.nombre}"></p:inputText>
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+
+			<p:column headerText="Fecha">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{usuario.fecha}">
+							<f:convertDateTime type="date" pattern="dd-MM-yyyy" />
+						</h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<p:calendar value="#{usuario.fecha}" pattern="dd-MM-yyyy"></p:calendar>
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+
+			<p:column headerText="edad">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{usuario.edad}" />
+					</f:facet>
+					<f:facet name="input">
+						<h:inputText value="#{usuario.edad}" style="width:100%" />
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+
+			<p:column headerText="email">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{usuario.email}" />
+					</f:facet>
+					<f:facet name="input">
+						<h:inputText value="#{usuario.email}" style="width:100%" />
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+
+			<p:column style="width:32px">
+				<p:rowEditor />
+			</p:column>
+
+			<p:column style="width:32px">
+				<p:commandButton icon="ui-icon-trash" value="Eliminar"
+					action="#{holaMundoBean.eliminarUsuario(usuario)}"
+					update=":form:msgs :form:users" />
+			</p:column>
+
+		</p:dataTable>
+
+		<p:commandButton value="Actualizar"
+			action="#{holaMundoBean.updateTable}" update="users"></p:commandButton>
+
+
+
+	</h:form>
+
+
+</h:body>
+</html>
